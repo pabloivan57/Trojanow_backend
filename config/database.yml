@@ -1,0 +1,13 @@
+global: &global
+  adapter: postgresql
+  encoding: utf8
+  pool: 5
+  host: localhost
+
+development:
+  <<: *global
+  database: trojanow_development
+
+test:
+  <<: *global
+  database: trojanow_test
