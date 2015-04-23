@@ -11,7 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420042557) do
+ActiveRecord::Schema.define(version: 20150422201220) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "environments", force: true do |t|
+    t.decimal  "temperature", null: false
+    t.integer  "status_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "environments", ["status_id"], name: "index_environments_on_status_id", using: :btree
+
+  create_table "locations", force: true do |t|
+    t.decimal  "latitude",   null: false
+    t.decimal  "longitude",  null: false
+    t.integer  "status_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "locations", ["status_id"], name: "index_locations_on_status_id", using: :btree
 
   create_table "statuses", force: true do |t|
     t.string   "title",       null: false
@@ -20,9 +42,10 @@ ActiveRecord::Schema.define(version: 20150420042557) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "status_type"
   end
 
-  add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"
+  add_index "statuses", ["user_id"], name: "index_statuses_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -38,9 +61,9 @@ ActiveRecord::Schema.define(version: 20150420042557) do
     t.datetime "updated_at"
   end
 
-  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token"
-  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree
+  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end

@@ -12,8 +12,13 @@ class StatusesController < ApiController
   private
 
   def status_params
+    params[:status][:location_attributes]    = params[:status][:location]    if params[:status][:location]
+    params[:status][:environment_attributes] = params[:status][:environment] if params[:status][:environment]
     params.require(:status).permit(:title,
                                    :description,
-                                   :anonymous)
+                                   :anonymous,
+                                   :status_type,
+                                   location_attributes: [:latitude, :longitude],
+                                   environment_attributes: [:temperature])
   end
 end
