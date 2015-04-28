@@ -8,6 +8,73 @@ describe "Status API" do
       login_as(user, scope: :user)
     end
 
+    describe "GET /statuses" do
+      let!(:poster_1) { create(:user) }
+      let!(:status_1) { create(:status, status_type: 'status', user: user) }
+      let!(:status_2) { create(:status, status_type: 'status', user: user) }
+      let!(:status_3) { create(:status, status_type: 'event', user: user) }
+      let!(:status_4) { create(:status, :anonymous, status_type: 'event', user: poster_1) }
+      let!(:status_5) { create(:status, user: poster_1) }
+
+      it "retrieves anonymous statuses and user statuses" do
+         get statuses_path, json_headers
+
+         expect(response.status).to eq(200)
+
+         statuses = json.sort_by { |hsh| hsh["id"] }
+         expect(statuses.count).to eq(4)
+         status = statuses[0]
+         expect(status['status_type']).to eq('status')
+         expect(status['user_id']).to eq(user.id)
+
+         status = statuses[1]
+         expect(status['status_type']).to eq('status')
+         expect(status['user_id']).to eq(user.id)
+
+         status = statuses[2]
+         expect(status['status_type']).to eq('event')
+         expect(status['user_id']).to eq(user.id)
+
+         status = statuses[3]
+         expect(status['status_type']).to eq('event')
+         expect(status['user_id']).to eq(poster_1.id)
+      end
+
+      it "retrieves only statuses types when using the param type = status" do
+        get statuses_path, { type: 'status' }, json_headers
+
+        expect(response.status).to eq(200)
+
+        statuses = json.sort_by { |hsh| hsh["id"] }
+        expect(statuses.count).to eq(2)
+        status = statuses[0]
+        expect(status['status_type']).to eq('status')
+        expect(status['user_id']).to eq(user.id)
+
+        status = statuses[1]
+        expect(status['status_type']).to eq('status')
+        expect(status['user_id']).to eq(user.id)
+      end
+
+      it "retrieves only event types when using the param type = event" do
+        get statuses_path, { type: 'event' }, json_headers
+
+        expect(response.status).to eq(200)
+
+        statuses = json.sort_by { |hsh| hsh["id"] }
+        expect(statuses.count).to eq(2)
+        status = statuses[0]
+        expect(status['status_type']).to eq('event')
+        expect(status['anonymous']).to eq(false)
+        expect(status['user_id']).to eq(user.id)
+
+        status = statuses[1]
+        expect(status['status_type']).to eq('event')
+        expect(status['anonymous']).to eq(true)
+        expect(status['user_id']).to eq(poster_1.id)
+      end
+    end
+
     describe "POST /statuses" do
       let(:status_params) do
         {

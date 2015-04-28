@@ -4,7 +4,8 @@ FactoryGirl.define do
     description 'Description'
     anonymous false
     status_type 'status'
-    user
+    location
+    environment
 
     trait :anonymous do
       anonymous true
