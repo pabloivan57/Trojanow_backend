@@ -4,7 +4,7 @@ class StatusesController < ApiController
     anonym_statuses  = Status.by_attributes(true, params[:type])
     user_statuses    = current_user.statuses.by_attributes(false, params[:type])
     statuses = (anonym_statuses + user_statuses).uniq
-    respond_with(statuses, include: [:location, :environment], status: :ok, location: nil)
+    respond_with(statuses, include: [:location, :environment, user: { only: [:id, :fullname] } ], status: :ok, location: nil)
   end
 
   def create

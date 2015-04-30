@@ -8,7 +8,6 @@ describe Status do
   end
 
   describe "Validations" do
-    it { should validate_presence_of(:title) }
     it { should validate_presence_of(:description) }
     it { should validate_presence_of(:user) }
     it { should ensure_inclusion_of(:status_type).in_array(["status","event"]) }

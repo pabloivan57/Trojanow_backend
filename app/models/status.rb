@@ -9,7 +9,7 @@ class Status < ActiveRecord::Base
   scope :status,    -> { where(status_type: 'status' ) }
   scope :event,     -> { where(status_type: 'event')  }
 
-  validates :title, :description, :user, presence: true
+  validates :description, :user, presence: true
   validates :status_type, inclusion: { in: %w(status event) }
 
   def self.by_attributes(anonymous = false, type = nil)
