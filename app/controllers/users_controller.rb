@@ -6,7 +6,8 @@ class UsersController < ApiController
     user = User.create({
                          email: params[:email],
                          password: params[:password],
-                         password_confirmation: params[:password_confirmation]
+                         password_confirmation: params[:password_confirmation],
+                         fullname: params[:fullname]
                        })
     if user.save
       render :json => user.as_json, status: :created
